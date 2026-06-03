@@ -1,0 +1,5 @@
+{
+  "youden_threshold": 0.3,
+  "f1_threshold": 0.55,
+  "balanced_threshold": 0.3
+}
