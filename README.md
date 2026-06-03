@@ -11,6 +11,10 @@ pinned: false
 
 # ICU Mortality Prediction
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Hugging%20Face-yellow)](https://huggingface.co/spaces/mdg8888/icu-mortality-prediction)
+
+**[Try the live demo](https://huggingface.co/spaces/mdg8888/icu-mortality-prediction)**
+
 XGBoost model trained on MIMIC-III clinical ICU data to predict in-hospital mortality.
 
 ## Model
