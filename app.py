@@ -210,6 +210,26 @@ Enter patient vitals and demographics below, then click **Predict**.
         outputs=[prob_out, risk_out, outcome_out, table_out],
     )
 
+    gr.Markdown("### Example Patients — click to load")
+    gr.Examples(
+        label="",
+        examples=[
+            # High-risk: 91yo widowed female, emergency CCU admission
+            [91, "F", "EMERGENCY", "Medicare", "NOT SPECIFIED", "WIDOWED", "WHITE", "CCU",
+             56, 77, 63.9, 83, 148, 115.4, 46, 91, 61.2, 59, 98, 75.8,
+             16, 28, 21.7, 35.7, 37.8, 36.6, 94, 100, 98.7, 137, 164, 150.5],
+            # Low-risk: 70yo single female, emergency MICU admission
+            [70, "F", "EMERGENCY", "Medicare", "PROTESTANT QUAKER", "SINGLE", "WHITE", "MICU",
+             89, 145, 121.0, 74, 127, 106.6, 42, 90, 61.2, 59, 94, 74.5,
+             15, 30, 22.3, 35.1, 36.9, 36.1, 90, 99, 95.7, 111, 230, 160.8],
+        ],
+        inputs=all_inputs,
+        outputs=[prob_out, risk_out, outcome_out, table_out],
+        fn=run_prediction,
+        cache_examples=False,
+        example_labels=["High-Risk Patient (91F, CCU)", "Low-Risk Patient (70F, MICU)"],
+    )
+
     gr.Markdown("""
 ---
 **Model details:** XGBoost (`n_estimators=1500`, `max_depth=8`, `learning_rate=0.02`)
