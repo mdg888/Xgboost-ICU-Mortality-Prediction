@@ -1,6 +1,9 @@
 # Data files (too large / sensitive)
 data/
 
+# R script
+Boosted Trees.R
+
 # AI project spec (local only)
 .ai/
 
