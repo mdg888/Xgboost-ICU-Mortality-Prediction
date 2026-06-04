@@ -17,28 +17,19 @@ pinned: false
 
 ## What is this?
 
-This project predicts the probability of in-hospital death for ICU patients using a gradient-boosted tree model (XGBoost). It was originally built in R as part of a university data science project using the MIMIC-III clinical database, and has been fully migrated to Python and deployed as an interactive web app on Hugging Face Spaces.
+This project predicts the probability of in-hospital death for ICU patients using a gradient-boosted tree model (XGBoost), trained on the MIMIC-III clinical database and deployed as an interactive web app on Hugging Face Spaces.
 
 ### Background
 
 ICU (Intensive Care Unit) mortality prediction is a well-studied problem in clinical machine learning. Early identification of high-risk patients allows clinical teams to allocate resources more effectively and intervene sooner. The MIMIC-III database (Medical Information Mart for Intensive Care) is one of the most widely used publicly available clinical datasets, containing records from over 40,000 ICU admissions at Beth Israel Deaconess Medical Center.
 
-### What the original R project did
+### How it works
 
-The original project was built in R using the `tidymodels` framework. It:
-- Loaded raw MIMIC-III ICU data from CSV files
-- Engineered features from ICD-9 diagnosis codes, vital signs, and patient demographics
-- Trained an XGBoost classifier with 5-fold cross-validation
-- Optimised the classification threshold using Youden's J statistic
-- Produced a submission CSV for the Kaggle competition format
-
-### What this Python project adds
-
-This migration reproduces the entire R pipeline in Python with several improvements:
-- **Proper train-only fitting** — the preprocessing pipeline (median imputation, one-hot encoding) is fitted on training data only and saved as an artifact, preventing data leakage when applied to new patients
-- **`scale_pos_weight` applied** — the R project calculated but never used the class weight; this version applies it correctly to handle the 88/12 class imbalance
-- **Age edge case handling** — MIMIC-III shifts ages above 89 to ~300 for privacy; this is correctly mapped back to 91
-- **Deployed as a live web app** — anyone can enter patient data and get a prediction instantly
+The model is trained on 20,885 ICU stays with patient vitals, demographics, and ICD-9 diagnosis codes as inputs. The full pipeline covers:
+- Feature engineering from ICD-9 diagnosis codes, vital signs, and patient demographics
+- A scikit-learn preprocessing pipeline (median imputation, one-hot encoding) fitted on training data only to prevent data leakage
+- XGBoost classifier with 5-fold stratified cross-validation
+- Classification threshold optimised via Youden's J statistic for the best balance of sensitivity and specificity
 
 The app takes a patient's vital signs and demographics as input and returns:
 - A **mortality probability** (0–100%)
@@ -115,10 +106,9 @@ icu-mortality-prediction/
 │   │                             #   4. Final model fit on all training data
 │   │                             #   5. Save artifacts to artifacts/
 │   │
-│   ├── evaluate.py               # Metric functions mirroring R's yardstick:
-│   │                             # accuracy, ROC-AUC, sensitivity, specificity,
-│   │                             # F1, precision, MCC, balanced accuracy, kappa
-│   │                             # + Youden threshold optimisation
+│   ├── evaluate.py               # Metric functions: accuracy, ROC-AUC, sensitivity,
+│   │                             # specificity, F1, precision, MCC, balanced accuracy,
+│   │                             # kappa + Youden threshold optimisation
 │   │
 │   ├── predict.py                # Inference pipeline:
 │   │                             #   Loads artifacts once at startup (cached)
