@@ -165,8 +165,16 @@ Feature Matrix (20,885 rows × 74 features)
 
 ## Results
 
-<!-- Add screenshots here once captured -->
-*Example predictions available in the live demo — click "High-Risk Patient" or "Low-Risk Patient" to see the model in action.*
+### High Risk Patient
+![High Risk Patient](assets/high_risk_patient.png)
+
+### Medium Risk Patient
+![Medium Risk Patient](assets/medium_risk_patient.png)
+
+### Low Risk Patient
+![Low Risk Patient](assets/low_risk_patient.png)
+
+*Example predictions also available in the live demo — click "High-Risk Patient" or "Low-Risk Patient" to load them instantly.*
 
 ## How to Run Locally
 

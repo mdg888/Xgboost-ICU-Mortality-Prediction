@@ -1,6 +1,9 @@
 # Data files (too large / sensitive)
 data/
 
+# Screenshots
+assets/
+
 # Python
 __pycache__/
 *.py[cod]
