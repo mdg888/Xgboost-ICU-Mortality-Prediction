@@ -1,6 +1,9 @@
 # Data files (too large / sensitive)
 data/
 
+# AI project spec (local only)
+.ai/
+
 # Python
 __pycache__/
 *.py[cod]
