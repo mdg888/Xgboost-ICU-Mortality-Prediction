@@ -37,15 +37,23 @@ VITAL_LABELS = [
 def build_patient_dict(
     age, gender,
     admission_type, insurance, religion, marital_status, ethnicity, first_careunit,
-    hr_min, hr_max, hr_mean,
-    sbp_min, sbp_max, sbp_mean,
-    dbp_min, dbp_max, dbp_mean,
-    mbp_min, mbp_max, mbp_mean,
-    rr_min, rr_max, rr_mean,
-    temp_min, temp_max, temp_mean,
-    spo2_min, spo2_max, spo2_mean,
-    gluc_min, gluc_max, gluc_mean,
+    hr_min, hr_max,
+    sbp_min, sbp_max,
+    dbp_min, dbp_max,
+    mbp_min, mbp_max,
+    rr_min, rr_max,
+    temp_min, temp_max,
+    spo2_min, spo2_max,
+    gluc_min, gluc_max,
 ):
+    hr_mean   = (hr_min   + hr_max)   / 2
+    sbp_mean  = (sbp_min  + sbp_max)  / 2
+    dbp_mean  = (dbp_min  + dbp_max)  / 2
+    mbp_mean  = (mbp_min  + mbp_max)  / 2
+    rr_mean   = (rr_min   + rr_max)   / 2
+    temp_mean = (temp_min + temp_max) / 2
+    spo2_mean = (spo2_min + spo2_max) / 2
+    gluc_mean = (gluc_min + gluc_max) / 2
     return {
         "Age":              age,
         "GENDER":           gender,
@@ -82,13 +90,10 @@ def validate(patient_dict: dict) -> str | None:
     for v in vitals:
         mn = patient_dict[f"{v}_Min"]
         mx = patient_dict[f"{v}_Max"]
-        me = patient_dict[f"{v}_Mean"]
-        if mn is None or mx is None or me is None:
-            return f"{v}: all three fields (Min, Max, Mean) are required."
+        if mn is None or mx is None:
+            return f"{v}: Min and Max are required."
         if mn > mx:
             return f"{v}: Min ({mn}) cannot exceed Max ({mx})."
-        if not (mn <= me <= mx):
-            return f"{v}: Mean ({me}) must be between Min ({mn}) and Max ({mx})."
     if patient_dict["Age"] is None or not (0 <= patient_dict["Age"] <= 120):
         return "Age must be between 0 and 120."
     return None
@@ -173,7 +178,7 @@ Enter patient vitals and demographics below, then click **Predict**.
 
         # ── Right column: Vital signs ──────────────────────────────────────
         with gr.Column(scale=2):
-            gr.Markdown("### Vital Signs — enter Min, Max, and Mean for each")
+            gr.Markdown("### Vital Signs — enter Min and Max for each")
 
             vital_inputs = []
             for key, label, unit, vmin, vmax in VITAL_LABELS:
@@ -181,8 +186,7 @@ Enter patient vitals and demographics below, then click **Predict**.
                 with gr.Row():
                     mn = gr.Number(label="Min", minimum=vmin, maximum=vmax)
                     mx = gr.Number(label="Max", minimum=vmin, maximum=vmax)
-                    me = gr.Number(label="Mean", minimum=vmin, maximum=vmax)
-                vital_inputs += [mn, mx, me]
+                vital_inputs += [mn, mx]
 
     predict_btn = gr.Button("Predict Mortality", variant="primary", size="lg")
 
@@ -216,12 +220,12 @@ Enter patient vitals and demographics below, then click **Predict**.
         examples=[
             # High-risk: 91yo widowed female, emergency CCU admission
             [91, "F", "EMERGENCY", "Medicare", "NOT SPECIFIED", "WIDOWED", "WHITE", "CCU",
-             56, 77, 63.9, 83, 148, 115.4, 46, 91, 61.2, 59, 98, 75.8,
-             16, 28, 21.7, 35.7, 37.8, 36.6, 94, 100, 98.7, 137, 164, 150.5],
+             56, 77, 83, 148, 46, 91, 59, 98,
+             16, 28, 35.7, 37.8, 94, 100, 137, 164],
             # Low-risk: 70yo single female, emergency MICU admission
             [70, "F", "EMERGENCY", "Medicare", "PROTESTANT QUAKER", "SINGLE", "WHITE", "MICU",
-             89, 145, 121.0, 74, 127, 106.6, 42, 90, 61.2, 59, 94, 74.5,
-             15, 30, 22.3, 35.1, 36.9, 36.1, 90, 99, 95.7, 111, 230, 160.8],
+             89, 145, 74, 127, 42, 90, 59, 94,
+             15, 30, 35.1, 36.9, 90, 99, 111, 230],
         ],
         inputs=all_inputs,
         outputs=[prob_out, risk_out, outcome_out, table_out],
