@@ -186,6 +186,8 @@ Enter patient vitals and demographics below, then click **Predict**.
                 with gr.Row():
                     mn = gr.Number(label="Min", minimum=vmin, maximum=vmax)
                     mx = gr.Number(label="Max", minimum=vmin, maximum=vmax)
+                if key == "TempC":
+                    gr.Markdown(f"*Please enter values between {vmin}°C and {vmax}°C.*")
                 vital_inputs += [mn, mx]
 
     predict_btn = gr.Button("Predict Mortality", variant="primary", size="lg")
